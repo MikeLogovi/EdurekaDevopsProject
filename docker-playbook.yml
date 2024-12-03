@@ -1,0 +1,27 @@
+---
+- name: Build Docker Image and Deploy Container
+  hosts: docker
+  tasks:
+    - name: Build Docker image
+      ansible.builtin.command:
+        cmd: docker build -t my-tomcat-app .
+        chdir: /Users/teteelommikenorbertlogovi/Documents/Projets/Personnel/Edureka_Exam/Project
+
+    - name: Check if container exists
+      ansible.builtin.command:
+        cmd: docker ps -q -f name=my-tomcat-container
+      register: container_status
+
+    - name: Stop existing container if running
+      ansible.builtin.command:
+        cmd: docker stop my-tomcat-container
+      when: container_status.stdout != ""
+
+    - name: Remove existing container
+      ansible.builtin.command:
+        cmd: docker rm my-tomcat-container || true
+      when: container_status.stdout != ""  
+
+    - name: Run Docker container
+      ansible.builtin.command:
+        cmd: docker run -d -p 8083:8080 --name my-tomcat-container my-tomcat-app

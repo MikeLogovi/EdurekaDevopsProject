@@ -1,0 +1,15 @@
+---
+- name: Deploy application to Kubernetes
+  hosts: localhost
+  tasks:
+    - name: Apply Pod manifest
+      ansible.builtin.command:
+        cmd: kubectl apply -f /Users/teteelommikenorbertlogovi/Documents/Projets/Personnel/Edureka_Exam/Project/pod.yml
+
+    - name: Apply Service manifest
+      ansible.builtin.command:
+        cmd: kubectl apply -f /Users/teteelommikenorbertlogovi/Documents/Projets/Personnel/Edureka_Exam/Project/service.yml
+
+    - name: Apply Deployment manifest
+      ansible.builtin.command:
+        cmd: kubectl apply -f /Users/teteelommikenorbertlogovi/Documents/Projets/Personnel/Edureka_Exam/Project/deployment.yml
