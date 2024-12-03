@@ -1,0 +1,59 @@
+pipeline {
+    agent none
+    environment {
+        DOCKER_IMAGE = "mikelogovi/my-tomcat-app"
+        CONTAINER_NAME = "my-tomcat-container"
+    }
+   
+    stages {
+         stage('Clone Repository') {
+            agent { label 'Slave-1' }
+            steps {
+                echo 'Cloning repository...'
+                git branch: 'main',
+                    url: 'git@github.com:MikeLogovi/EdurekaDevopsProject.git',
+                    credentialsId: 'MikeLogovi'
+            }
+        }
+        stage('Compile') {
+            agent { label 'Slave-1' }
+            steps {
+                build job: 'Compile Code'
+            }
+        }
+        stage('Test') {
+            agent { label 'Slave-1' }
+            steps {
+                build job: 'Test Code'
+            }
+        }
+        stage('Package') {
+            agent { label 'Slave-1' }
+            steps {
+                build job: 'Package Code'
+            }
+        }
+        stage('Check Workspace') {
+             agent { label 'Slave-1' }
+            steps {
+                sh 'ls -l'  // Vérifie que le Dockerfile est présent
+            }
+        }
+         stage('Build Docker Image') {
+              agent { label 'Slave-1' }
+            steps {
+                sh 'docker build -t ${DOCKER_IMAGE} .'
+            }
+        }
+        stage('Deploy Container') {
+             agent { label 'Slave-1' }
+            steps {
+                sh '''
+                docker stop ${CONTAINER_NAME} || true
+                docker rm ${CONTAINER_NAME} || true
+                docker run -d -p 8083:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}
+                '''
+            }
+        }
+    }
+}

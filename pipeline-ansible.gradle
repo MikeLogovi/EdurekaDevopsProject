@@ -1,0 +1,32 @@
+pipeline {
+    agent none
+    stages {
+        stage('Clone Repository') {
+            agent { label 'Slave-1' }
+            steps {
+                echo 'Cloning repository...'
+                git branch: 'main',
+                    url: 'git@github.com:MikeLogovi/EdurekaDevopsProject.git',
+                    credentialsId: 'MikeLogovi'
+            }
+        }
+        stage('Build and Deploy with Ansible') {
+            agent { label 'Slave-1' }
+            steps {
+                ansiblePlaybook(
+                    installation: 'Ansible',
+                    playbook: '/etc/ansible/docker-playbook.yml'
+                )
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            agent { label 'Slave-1' }
+            steps {
+                ansiblePlaybook(
+                    installation: 'Ansible',
+                    playbook: '/etc/ansible/kubernetes-playbook.yml'
+                )
+            }
+        }
+    }
+}
