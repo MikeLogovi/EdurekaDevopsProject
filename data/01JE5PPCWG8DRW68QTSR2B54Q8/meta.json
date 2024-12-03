@@ -1,0 +1,17 @@
+{
+	"ulid": "01JE5PPCWG8DRW68QTSR2B54Q8",
+	"minTime": 1733200038785,
+	"maxTime": 1733205600000,
+	"stats": {
+		"numSamples": 35734,
+		"numSeries": 1084,
+		"numChunks": 1084
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01JE5PPCWG8DRW68QTSR2B54Q8"
+		]
+	},
+	"version": 1
+}
